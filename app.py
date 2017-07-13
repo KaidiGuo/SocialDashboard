@@ -1,8 +1,10 @@
+# -*- coding: UTF-8 -*-
 from flask import Flask
 from flask import flash
 from flask import json
 from flask import render_template, request
 from flaskext.mysql import MySQL
+from django.utils.safestring import mark_safe
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -10,7 +12,7 @@ mysql = MySQL()
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'WIND327976003'
-app.config['MYSQL_DATABASE_DB'] = 'BucketList'
+app.config['MYSQL_DATABASE_DB'] = 'test'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
@@ -20,7 +22,27 @@ def index():
     return render_template("index.html")
 @app.route("/iotemplate")
 def iotemplate():
-    return render_template("iotemplate.html")
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    sql = "select platform2,count(*) from wbdata group by platform2 order by count(*) desc limit 8;"
+
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    def structure_result(myresult):
+        datalist = []
+        textlist = []
+        outputdata = []
+        for something in myresult:
+            datalist.append(int(something[1]))
+            textlist.append(something[0])
+        outputdata.append(datalist)
+        outputdata.append(textlist)
+        return outputdata
+
+    datalist = structure_result(result)[0]
+    textlist = structure_result(result)[1]
+    return render_template("iotemplate.html",datalist = datalist, textlist = mark_safe(textlist))
+
 @app.route('/bar')
 def bar():
     return render_template("herosidbar.html")
@@ -54,6 +76,7 @@ def delete(todo_id):
     for something in result:
         outputlist.append(int(something[1]))
 
+
     return render_template("test.html", todos=outputlist)
 
 @app.route('/test/<parameter>')
@@ -69,17 +92,26 @@ def showplot():
 def plotdata():
     conn = mysql.connect()
     cursor = conn.cursor()
-    sql = "select * from tbl_user"
+    sql = "select platform2,count(*) from wbdata group by platform2 order by count(*) desc limit 5;"
 
     cursor.execute(sql)
     result = cursor.fetchall()
-    outputlist =[]
-    for something in result:
-        outputlist.append(int(something[1]))
 
-    # flash('New entry was successfully posted')
+    def structure_result(myresult):
+        datalist = []
+        textlist = []
+        outputdata = []
+        for something in myresult:
+            datalist.append(int(something[1]))
+            textlist.append(something[0])
+        outputdata.append(datalist)
+        outputdata.append(textlist)
+        return outputdata
 
-    return render_template("plot.html",food = outputlist)
+    datalist = structure_result(result)[0]
+    textlist = structure_result(result)[1]
+    # texts = ["beef","milk","chess"]
+    return render_template("plot.html", datalist = datalist, textlist = mark_safe(textlist) )
 
 
 @app.route('/list')
