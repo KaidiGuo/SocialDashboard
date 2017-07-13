@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<style>
+
+ h2{
+     background-color: #709693;
+    padding: 10px;
+ }
+    #box{
+    width: 500px;
+    height: 500px;
+    border: 2px solid red;
+}
+    #im{
+        border: 2px solid orangered;
+width: 500px;
+    height: 500px;
+    }
+    object{
+        width: 500px;
+    }
+
+</style>
+<body>
+<div id="box"  ></div>
+<img id="im" src="../static/geojson/blue.svg" alt="some text"/>
+<!--<object data="../static/geojson/worldmap.svg" type="image/svg+xml"></object>-->
+
+
+</body>
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+    d3.xml("../static/geojson/worldmap.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+//  document.body.appendChild(xml.documentElement);
+//    document.getElementById("box").appendChild(xml.documentElement);
+//    d3.select("#time-chart")
+//            .append(xml.documentElement);
+});
+</script>
+
+</html>

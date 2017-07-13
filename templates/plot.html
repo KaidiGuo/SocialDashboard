@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.bar rect {
+  fill: steelblue;
+}
+
+.bar text {
+  fill: #fff;
+  font: 10px sans-serif;
+}
+#box{
+    width: 500px;
+    height: 500px;
+    border: 2px solid red;
+}
+
+
+</style>
+<body>
+<h1 style="background-color: grey; padding: 10px; color: white">A Plot</h1>
+<div id="box"  ></div>
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+
+
+var width = 600;  //
+var height = 600;   //
+var svg = d3.select("body")     //
+    .append("svg")          //
+    .attr("width", width)       //
+    .attr("height", height)
+    .attr("style", "border: 1px solid black");//
+
+d3.xml("./static/geojson/blue.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+//  document.body.appendChild(xml.documentElement);
+    document.getElementById("box").appendChild(xml.documentElement);
+//    d3.select("#time-chart")
+//            .append(xml.documentElement);
+});
+
+//var dataset = [ 25, 6, 21 , 13 , 9, 6, 2, 20 ];
+var dataset = {{food}};
+
+var linear = d3.scaleLinear()
+        .domain([0, d3.max(dataset)])
+        .range([ 0,400]);
+
+var rectHeight = 30;   //
+svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("x",10)
+    .attr("y",function(d,i){
+         return i * (rectHeight + 5)+10;
+    })
+    .attr("width",function(d){
+         return linear(d);
+    })
+    .attr("height",rectHeight-5)
+    .attr("fill","steelblue")
+        .attr("opacity",0.4)
+        .on("mouseover",function(d,i){
+            d3.select(this)
+                .attr("opacity",1);
+        })
+        .on("mouseout",function(d,i){
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .attr("opacity",0.4);
+        })
+        .on("click",function () {
+
+        });
+
+svg.selectAll(".MyText")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("class","MyText")
+        .attr("x",10)
+    .attr("y",function(d,i){
+         return i * (rectHeight + 5);
+    })
+        .attr("dy","1.7em")
+        .text(function(d){
+            return d;
+        });
+
+
+  var axis = d3.axisBottom(linear)
+          .tickSize(300)
+          .tickValues([0,1, 2, 3, 5, 8, 13, 21,25]);
+
+  svg.append("g")
+        .attr("transform", "translate(10,10)")
+   .call(axis);
+
+  svg.selectAll("line")
+        .attr("stroke","grey")
+        .attr("stroke-dasharray","2.2");
+
+//svg.selectAll("text")
+//        .attr("dy","2em");
+
+svg.select(".domain").remove()
+
+</script>

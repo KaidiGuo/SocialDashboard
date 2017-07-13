@@ -1,0 +1,35 @@
+<html>
+<body>
+    <script language="javascript" type="text/javascript">
+    <!--
+    // 支持浏览器的源码
+    function AjaxFunction(){
+        var AjaxRequest;  // 缓存XHR对象便于 Ajax 使用
+
+        try{
+            // Opera 8.0+, Firefox, Safari
+            AjaxRequest = new XMLHttpRequest();
+        }catch (e){
+
+            // Internet Explorer Browsers
+            try{
+                AjaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+            }catch (e) {
+                try{
+                    AjaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+                }catch (e){
+                    // 错误处理
+                    alert("Your browser broke!");
+                    return false;
+                }
+            }
+        }
+    }
+    //-->
+    </script>
+    <form name='myForm'>
+    Name: <input type='text' name='username' /> <br />
+    Time: <input type='text' name='time' />
+    </form>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="./static/lib/css//bootstrap.min.css">
+  <link rel="stylesheet" href="./static/lib/css/keen-dashboards.css">
+  <link rel="stylesheet" href="./static/lib/css/dc.css">
+  <link rel="stylesheet" href="./static/css/custom.css">
+
+
+</head>
+
+
+
+<style>
+  img{
+    width: 100%;
+  }
+
+</style>
+
+
+<body class="application">
+
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="./">Donorschoose Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+
+    <div class="row">
+
+      <div class="col-sm-6">
+        <div class="row">
+
+          <!-- Time Chart -->
+          <div class="col-sm-12">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Time
+              </div>
+              <div class="chart-stage">
+                <div id="time-chart">
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Time Chart -->
+
+          <!-- Resources Pie -->
+          <div class="col-sm-6">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Resources Type
+              </div>
+              <div class="chart-stage">
+                <div id="resource-type-row-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Resources Pie -->
+
+          <!-- Poverty Pie -->
+          <div class="col-sm-6">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Poverty Level
+              </div>
+              <div class="chart-stage">
+                <div id="poverty-level-row-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Poverty Pie -->
+
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="col-sm-6">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+           Map
+          </div>
+          <div class="chart-stage">
+            <div id="worldmap">
+              <img id="im" src="../static/geojson/blue.svg" alt="some text"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Map -->
+
+      <!-- Metric 1 -->
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total Number of Donations
+          </div>
+          <div class="chart-stage">
+            <div id="number-projects-nd"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Metric 1 -->
+
+      <!-- Metric 2 -->
+      <div class="col-sm-3">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total Donations in USD
+          </div>
+          <div class="chart-stage">
+            <div id="total-donations-nd"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Metric 2 -->
+
+    </div>
+
+  </div>
+
+    <hr>
+    <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+
+  </div>
+
+  <script src="./static/lib/js/jquery.min.js"></script>
+  <script src="./static/lib/js/bootstrap.min.js"></script>
+  <script src="./static/lib/js/crossfilter.js"></script>
+  <script src="./static/lib/js/d3.js"></script>
+  <script src="./static/lib/js/dc.js"></script>
+  <script src="./static/lib/js/queue.js"></script>
+
+
+  <script src="./static/lib/js/keen.min.js"></script>
+  <script src='./static/js/graphs.js' type='text/javascript'></script>
+  <script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+d3.xml("../static/geojson/worldmap1.svg").mimeType("image/svg+xml").get(function(error, xml) {
+  if (error) throw error;
+//  document.body.appendChild(xml.documentElement);
+//    document.getElementById("number-projects-nd").appendChild(xml.documentElement);
+//    d3.select("#time-chart")
+//            .append(xml.documentElement);
+});
+
+var box = {"width":"200","height":"200","style":"border: 1px solid red"};
+
+//d3.select("#resource-type-row-chart")
+//        .append("svg")
+//        .attr("width",box.width )
+//        .attr("height",box.height)
+//        .attr("style",box.style)
+
+
+
+
+var width = "100%";  //
+var height =400;   //
+var svg = d3.select("#resource-type-row-chart")     //
+    .append("svg")          //
+    .attr("width", width)       //
+    .attr("height", height)
+    .attr("style", "border: 1px solid black");//
+
+var dataset = [ 25, 6, 21 , 13 , 9, 6, 2, 20 ];
+//var dataset = {{food}};
+
+var linear = d3.scaleLinear()
+        .domain([0, d3.max(dataset)])
+        .range([ 0,250]);
+
+var rectHeight = 30;   //
+svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("x",10)
+    .attr("y",function(d,i){
+         return i * (rectHeight + 5)+10;
+    })
+    .attr("width",function(d){
+         return linear(d);
+    })
+    .attr("height",rectHeight-5)
+    .attr("fill","steelblue")
+        .attr("opacity",0.4)
+        .on("mouseover",function(d,i){
+            d3.select(this)
+                .attr("opacity",1);
+        })
+        .on("mouseout",function(d,i){
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .attr("opacity",0.4);
+        })
+        .on("click",function () {
+
+        });
+
+svg.selectAll(".MyText")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("class","MyText")
+        .attr("x",10)
+    .attr("y",function(d,i){
+         return i * (rectHeight + 5);
+    })
+        .attr("dy","1.7em")
+        .text(function(d){
+            return d;
+        });
+
+
+  var axis = d3.axisBottom(linear)
+          .tickSize(300)
+          .tickValues([0,1, 2, 3, 5, 8, 13, 21,25]);
+
+  svg.append("g")
+        .attr("transform", "translate(10,10)")
+   .call(axis);
+
+  svg.selectAll("line")
+        .attr("stroke","grey")
+        .attr("stroke-dasharray","2.2");
+
+//svg.selectAll("text")
+//        .attr("dy","2em");
+
+svg.select(".domain").remove()
+
+</script>
+</body>
+</html>
