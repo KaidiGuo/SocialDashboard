@@ -24,7 +24,7 @@ def index():
 def iotemplate():
     conn = mysql.connect()
     cursor = conn.cursor()
-    sql = "select platform2,count(*) from wbdata group by platform2 order by count(*) desc limit 8;"
+    sql = "select platform2,count(*) from wbdata group by platform2 order by count(*) desc limit 10;"
 
     cursor.execute(sql)
     result = cursor.fetchall()
@@ -41,7 +41,13 @@ def iotemplate():
 
     datalist = structure_result(result)[0]
     textlist = structure_result(result)[1]
-    return render_template("iotemplate.html",datalist = datalist, textlist = mark_safe(textlist))
+
+    sql_country_data_count = "select keyword, count(*) from wbdata group by keyword order by count(*) desc;"
+    cursor.execute(sql_country_data_count)
+    sql_country_data_count_result = cursor.fetchall()
+    country_list = structure_result(sql_country_data_count_result)[0]
+    country_list_name = structure_result(sql_country_data_count_result)[1]
+    return render_template("iotemplate.html",datalist = datalist, textlist = mark_safe(textlist), country_list = country_list, country_list_name = mark_safe(country_list_name))
 
 @app.route('/bar')
 def bar():

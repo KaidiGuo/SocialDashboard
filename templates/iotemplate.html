@@ -18,8 +18,20 @@
   }
   .MyText{
     color: grey;
-    size: 0.8em;
+
+    /*size: 0.6em;*/
   }
+  .tooltip{
+    font-family: simsun;
+	 font-size: 70%;
+	 width: 120;
+	 height: auto;
+	 position: absolute;
+	 text-align: center;
+    padding: 1px;
+        border: 1px solid darkgray;
+	 background-color: white;
+}
 
 </style>
 
@@ -194,7 +206,7 @@ var svg = d3.select("#resource-type-row-chart")     //
     .append("svg")          //
     .attr("width", width)       //
     .attr("height", height)
-        .attr("viewBox","0 0 300 400")
+        .attr("viewBox","0 0 300 350")
         .attr("preserveAspectRatio","xMaxYMax meet")
     .attr("style", "border: 1px solid black");//
 
@@ -206,7 +218,7 @@ var linear = d3.scaleLinear()
         .domain([0, d3.max(dataset)])
         .range([ 0,250]);
 
-var rectHeight = 30;   //
+var rectHeight = 25;   //
 svg.selectAll("rect")
     .data(dataset)
     .enter()
@@ -240,6 +252,7 @@ svg.selectAll(".MyText")
         .enter()
         .append("text")
         .attr("class","MyText")
+        .attr("font-size", "80%")
         .attr("x",10)
     .attr("y",function(d,i){
          return i * (rectHeight + 5);
@@ -262,10 +275,98 @@ svg.selectAll(".MyText")
         .attr("stroke","grey")
         .attr("stroke-dasharray","2.2");
 
-//svg.selectAll("text")
-//        .attr("dy","2em");
-
 svg.select(".domain").remove()
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Here the horizontal histogram
+var width = "100%";  //
+var height ="100%";   //
+var country_svg = d3.select("#country_data_rank")     //
+    .append("svg")          //
+    .attr("width", width)       //
+    .attr("height", height)
+        .attr("viewBox","0 0 820 85")
+        .attr("preserveAspectRatio","xMaxYMax meet")
+    .attr("style", "border: 1px solid black");//
+
+var country_list = {{country_list}};
+
+var country_list_name ={{country_list_name}};
+
+var max_height = 70;
+var country_linear = d3.scaleLinear()
+        .domain([0, d3.max(country_list)])
+        .range([ max_height-5, 0]);
+
+
+
+
+var country_rect_width = 3;   //
+country_svg.selectAll("rect")
+    .data(country_list)
+    .enter()
+    .append("rect")
+        .attr("y", function(d){return country_linear(d)+6})
+    .attr("x",function(d,i){
+         return i * (country_rect_width + 1)+22;
+    })
+    .attr("height",function(d){
+         return max_height - country_linear(d);
+    })
+    .attr("width", country_rect_width)
+    .attr("fill","steelblue")
+        .attr("opacity",0.4)
+        .on("mouseover",function(d,i){
+            d3.select(this)
+                .attr("opacity",1);
+
+          tooltip.html(i+1 +":"+ country_list_name[i])
+					.style("left", (d3.event.pageX+10) + "px")
+					.style("top", (d3.event.pageY - 10) + "px")
+					.style("opacity",1.0);
+        })
+        .on("mouseout",function(d,i){
+            d3.select(this)
+                .transition()
+                .duration(500)
+                .attr("opacity",0.4);
+          tooltip.style("opacity",0.0);
+        })
+        .on("mousemove",function(d){
+				tooltip.style("left", (d3.event.pageX+ 10) + "px")
+						.style("top", (d3.event.pageY - 10) + "px");
+			})
+        .on("click",function () {
+
+        });
+
+
+var tooltip = d3.select("body")
+							.append("div")
+							.attr("class","tooltip")
+							.style("opacity",0.0);
+
+  var country_axis = d3.axisLeft(country_linear)
+          .tickSize(780)
+          .ticks(4);
+
+  country_svg.append("g")
+        .attr("transform", "translate(800,10)")
+   .call(country_axis);
+
+country_svg.selectAll("text")
+        .attr("font-size", "70%");
+
+  country_svg.selectAll("line")
+        .attr("stroke","grey")
+        .attr("stroke-dasharray","2.2");
+
+country_svg.select(".domain").remove()
+
+
+
+
+
 
 </script>
 </body>

@@ -11,21 +11,35 @@
   font: 10px sans-serif;
 }
 #box{
-    width: 500px;
-    height: 500px;
-    border: 2px solid red;
+
 }
 
     svg{
         border: 1px solid black;
     }
+    .tooltip{
+    font-family: simsun;
+	 font-size: 70%;
+	 width: 120;
+	 height: auto;
+	 position: absolute;
+	 text-align: center;
+        border: 1px solid darkgray;
+	 background-color: white;
+}
 
 </style>
 <body>
 <h1 style="background-color: grey; padding: 10px; color: white">A Plot</h1>
-<svg width="100%" height="100%" viewBox="0 0 500 500"
-preserveAspectRatio="xMaxYMax meet" style="border: 1px solid #000;">
-</svg>
+<div   >
+    <p style="background-color: #2a6496; width: auto; height: auto; display: inline">hi there!</p>
+
+</div>
+
+
+<!--<svg id="box" width="80%" height="50%" viewBox="0 0 500 500"-->
+<!--preserveAspectRatio="xMaxYMax meet" style="border: 1px solid #000;">-->
+<!--</svg>-->
 
 <script src="//d3js.org/d3.v4.min.js"></script>
 <script>
@@ -47,77 +61,126 @@ d3.xml("./static/geojson/blue.svg").mimeType("image/svg+xml").get(function(error
 //            .append(xml.documentElement);
 });
 
-var svg =d3.select("svg");
+//var svg =d3.select("svg");
 
 
-var dataset = {{datalist}};
+//var dataset = {{datalist}};
 //var texts = ["中国","德国","英国"]
-var texts = {{textlist}}
+//var texts = {{textlist}}
 //var dataset = {{food}};
 
-var linear = d3.scaleLinear()
-        .domain([0, d3.max(dataset)])
-        .range([ 0,400]);
+var width = "100%";  //
+var height ="50%";   //
+var country_svg = d3.select("body")     //
+    .append("svg")          //
+    .attr("width", width)       //
+    .attr("height", height)
+        .attr("viewBox","0 0 200 100")
+        .attr("preserveAspectRatio","xMaxYMax meet")
+    .attr("style", "border: 1px solid black");//
 
-var rectHeight = 30;   //
-svg.selectAll("rect")
-    .data(dataset)
+//var country_list = [["日本",1000],["韩国",900],["朝鲜",300],["尼日尼亚",100]];
+var country_list = [1000,900,300,100];
+var country_list_name = ["日本","韩国","朝鲜","尼日尼亚"]
+
+
+
+//var country_list = {{countrylistlist}};
+//var country_name ={{countryname}}
+var max_height = 50;
+var country_linear = d3.scaleLinear()
+        .domain([0, d3.max(country_list)])
+        .range([ max_height, 0]);
+
+var country_rect_width = 15;   //
+var bars = country_svg.selectAll("rect")
+    .data(country_list)
     .enter()
     .append("rect")
-    .attr("x",10)
-    .attr("y",function(d,i){
-         return i * (rectHeight + 5)+10;
+    .attr("y", function(d){return country_linear(d)+10})
+//    .attr("y", 0)
+    .attr("x",function(d,i){
+         return i * (country_rect_width + 3)+10;
+//         return 10;
     })
-    .attr("width",function(d){
-         return linear(d);
+    .attr("height",function(d){
+         return max_height - country_linear(d);
     })
-    .attr("height",rectHeight-5)
+    .attr("width", country_rect_width-5)
     .attr("fill","steelblue")
         .attr("opacity",0.4)
         .on("mouseover",function(d,i){
             d3.select(this)
                 .attr("opacity",1);
+            tooltip.html( country_list_name[i])
+					.style("left", (d3.event.pageX) + "px")
+					.style("top", (d3.event.pageY + 20) + "px")
+					.style("opacity",1.0);
         })
         .on("mouseout",function(d,i){
             d3.select(this)
                 .transition()
                 .duration(500)
                 .attr("opacity",0.4);
+            tooltip.style("opacity",0.0);
         })
+        .on("mousemove",function(d){
+				tooltip.style("left", (d3.event.pageX+ 10) + "px")
+						.style("top", (d3.event.pageY - 10) + "px");
+			})
         .on("click",function () {
 
         });
+var tooltip = d3.select("body")
+							.append("div")
+							.attr("class","tooltip")
+							.style("opacity",0.0);
 
-svg.selectAll(".MyText")
-        .data(texts)
-        .enter()
-        .append("text")
-        .attr("class","MyText")
-        .attr("x",10)
-    .attr("y",function(d,i){
-         return i * (rectHeight + 5);
-    })
-        .attr("dy","1.7em")
-        .text(function(d){
-            return d;
-        });
+//country_svg.selectAll(".CountryName")
+//        .data(country_list_name)
+//        .enter()
+//        .append("div")
+//        .attr("class","CountryName")
+//        .attr("background-color","rgb(90, 100, 138)")
+//        .attr("height","10px")
+//        .attr("width","10px")
+//        .attr("display","inline")
+//        .attr("border","1px solid red")
+//        .append("p")
+//            .text(function(d){
+//            return d;
+//            })
+//
+//            .attr("font-size", "10px")
+//            .attr("y",10)
+//            .attr("x",function(d,i){
+//         return i * (country_rect_width + 3);
+//          })
+//        .attr("dy","1.7em")
+//        ;
 
 
-  var axis = d3.axisBottom(linear)
-          .tickSize(300)
-          .ticks(5);
+  var country_axis = d3.axisLeft(country_linear)
+          .tickSize(100)
+          .ticks(3);
 
-  svg.append("g")
-        .attr("transform", "translate(10,10)")
-   .call(axis);
+  country_svg.append("g")
+        .attr("transform", "translate(150,10)")
+   .call(country_axis);
 
-  svg.selectAll("line")
+  country_svg.selectAll("line")
         .attr("stroke","grey")
         .attr("stroke-dasharray","2.2");
 
-//svg.selectAll("text")
-//        .attr("dy","2em");
+country_svg.select(".domain").remove()
 
-svg.select(".domain").remove()
+
+
+    //添加一个提示框
+
+
+
+
+
 
 </script>
