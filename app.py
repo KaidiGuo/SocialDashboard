@@ -47,7 +47,15 @@ def iotemplate():
     sql_country_data_count_result = cursor.fetchall()
     country_list = structure_result(sql_country_data_count_result)[0]
     country_list_name = structure_result(sql_country_data_count_result)[1]
-    return render_template("iotemplate.html",datalist = datalist, textlist = mark_safe(textlist), country_list = country_list, country_list_name = mark_safe(country_list_name))
+
+    sql_total_gender_rank = "select gender,count(*) from wbdata group by gender;"
+    cursor.execute(sql_total_gender_rank)
+    sql_total_gender_rank_value = cursor.fetchall()
+    gender_list_value = structure_result(sql_total_gender_rank_value)[0]
+    gender_list = structure_result(sql_total_gender_rank_value)[1]
+
+
+    return render_template("iotemplate.html",datalist = datalist, textlist = mark_safe(textlist), country_list = country_list, country_list_name = mark_safe(country_list_name), gender_list= mark_safe(gender_list), gender_list_value=gender_list_value)
 
 @app.route('/bar')
 def bar():
@@ -55,17 +63,8 @@ def bar():
 
 @app.route('/test/')
 def test():
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    sql = "select * from tbl_user"
 
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    outputlist = []
-    for something in result:
-        outputlist.append(int(something[1]))
-    # flash('New entry was successfully posted')
-    return render_template('test.html', todos = outputlist)
+    return render_template('test.html', )
 
 
 @app.route('/delete/<string:todo_id>')

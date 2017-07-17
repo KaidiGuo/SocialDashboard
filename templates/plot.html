@@ -1,186 +1,71 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
+<html>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="./static/lib/js/d3.layout.cloud.js"></script>
+<head>
+    <title>Word Cloud Example</title>
+</head>
 <style>
-
-.bar rect {
-  fill: steelblue;
-}
-
-.bar text {
-  fill: #fff;
-  font: 10px sans-serif;
-}
-#box{
-
-}
-
-    svg{
-        border: 1px solid black;
+    body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
     }
-    .tooltip{
-    font-family: simsun;
-	 font-size: 70%;
-	 width: 120;
-	 height: auto;
-	 position: absolute;
-	 text-align: center;
-        border: 1px solid darkgray;
-	 background-color: white;
-}
-
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
 </style>
 <body>
-<h1 style="background-color: grey; padding: 10px; color: white">A Plot</h1>
-<div   >
-    <p style="background-color: #2a6496; width: auto; height: auto; display: inline">hi there!</p>
+
+</body>
+<script>
+
+    var frequency_list = [{"text":"德国","size":120},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"physics","size":90},{"text":"describing","size":5},{"text":"matter","size":90},{"text":"physics-the","size":5},{"text":"world","size":10},{"text":"works","size":10},{"text":"science","size":70},{"text":"interactions","size":30},{"text":"studies","size":5},{"text":"properties","size":45},{"text":"nature","size":40},{"text":"branch","size":30},{"text":"concerned","size":25},{"text":"source","size":40},{"text":"google","size":10},{"text":"defintions","size":5},{"text":"two","size":15},{"text":"grouped","size":15},{"text":"traditional","size":15},{"text":"fields","size":15},{"text":"acoustics","size":15},{"text":"optics","size":15},{"text":"mechanics","size":20},{"text":"thermodynamics","size":15},{"text":"electromagnetism","size":15},{"text":"modern","size":15},{"text":"extensions","size":15},{"text":"thefreedictionary","size":15},{"text":"interaction","size":15},{"text":"org","size":25},{"text":"answers","size":5},{"text":"natural","size":15},{"text":"objects","size":5},{"text":"treats","size":10},{"text":"acting","size":5},{"text":"department","size":5},{"text":"gravitation","size":5},{"text":"heat","size":10},{"text":"light","size":10},{"text":"magnetism","size":10},{"text":"modify","size":5},{"text":"general","size":10},{"text":"bodies","size":5},{"text":"philosophy","size":5},{"text":"brainyquote","size":5},{"text":"words","size":5},{"text":"ph","size":5},{"text":"html","size":5},{"text":"lrl","size":5},{"text":"zgzmeylfwuy","size":5},{"text":"subject","size":5},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
+
+
+    var color = d3.scale.linear()
+            .domain([0,1,2,3,4,5,6,10,15,20,100])
+            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+    d3.layout.cloud().size([800, 300])
+            .words(frequency_list)
+            .rotate(0)
+            .fontSize(function(d) { return d.size; })
+            .on("end", draw)
+            .start();
+
+    function draw(words) {
+        d3.select("body").append("svg")
+                .attr("width", 850)
+                .attr("height", 350)
+                .attr("class", "wordcloud")
+                .append("g")
+                // without the transform, words words would get cutoff to the left and top, they would
+                // appear outside of the SVG area
+                .attr("transform", "translate(320,200)")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function(d) { return d.size + "px"; })
+                .style("fill", function(d, i) { return color(i); })
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+    }
+</script>
+
+<div style="width: 40%;">
+    <div class="legend">
+        Commonly used words are larger and slightly faded in color.  Less common words are smaller and darker.
+    </div>
 
 </div>
 
 
-<!--<svg id="box" width="80%" height="50%" viewBox="0 0 500 500"-->
-<!--preserveAspectRatio="xMaxYMax meet" style="border: 1px solid #000;">-->
-<!--</svg>-->
-
-<script src="//d3js.org/d3.v4.min.js"></script>
-<script>
-
-
-//var width = 600;  //
-//var height = 600;   //
-//var svg = d3.select("body")     //
-//    .append("svg")          //
-//    .attr("width", width)       //
-//    .attr("height", height)
-//    .attr("style", "border: 1px solid black");//
-
-d3.xml("./static/geojson/blue.svg").mimeType("image/svg+xml").get(function(error, xml) {
-  if (error) throw error;
-//  document.body.appendChild(xml.documentElement);
-//    document.getElementById("box").appendChild(xml.documentElement);
-//    d3.select("#time-chart")
-//            .append(xml.documentElement);
-});
-
-//var svg =d3.select("svg");
-
-
-//var dataset = {{datalist}};
-//var texts = ["中国","德国","英国"]
-//var texts = {{textlist}}
-//var dataset = {{food}};
-
-var width = "100%";  //
-var height ="50%";   //
-var country_svg = d3.select("body")     //
-    .append("svg")          //
-    .attr("width", width)       //
-    .attr("height", height)
-        .attr("viewBox","0 0 200 100")
-        .attr("preserveAspectRatio","xMaxYMax meet")
-    .attr("style", "border: 1px solid black");//
-
-//var country_list = [["日本",1000],["韩国",900],["朝鲜",300],["尼日尼亚",100]];
-var country_list = [1000,900,300,100];
-var country_list_name = ["日本","韩国","朝鲜","尼日尼亚"]
-
-
-
-//var country_list = {{countrylistlist}};
-//var country_name ={{countryname}}
-var max_height = 50;
-var country_linear = d3.scaleLinear()
-        .domain([0, d3.max(country_list)])
-        .range([ max_height, 0]);
-
-var country_rect_width = 15;   //
-var bars = country_svg.selectAll("rect")
-    .data(country_list)
-    .enter()
-    .append("rect")
-    .attr("y", function(d){return country_linear(d)+10})
-//    .attr("y", 0)
-    .attr("x",function(d,i){
-         return i * (country_rect_width + 3)+10;
-//         return 10;
-    })
-    .attr("height",function(d){
-         return max_height - country_linear(d);
-    })
-    .attr("width", country_rect_width-5)
-    .attr("fill","steelblue")
-        .attr("opacity",0.4)
-        .on("mouseover",function(d,i){
-            d3.select(this)
-                .attr("opacity",1);
-            tooltip.html( country_list_name[i])
-					.style("left", (d3.event.pageX) + "px")
-					.style("top", (d3.event.pageY + 20) + "px")
-					.style("opacity",1.0);
-        })
-        .on("mouseout",function(d,i){
-            d3.select(this)
-                .transition()
-                .duration(500)
-                .attr("opacity",0.4);
-            tooltip.style("opacity",0.0);
-        })
-        .on("mousemove",function(d){
-				tooltip.style("left", (d3.event.pageX+ 10) + "px")
-						.style("top", (d3.event.pageY - 10) + "px");
-			})
-        .on("click",function () {
-
-        });
-var tooltip = d3.select("body")
-							.append("div")
-							.attr("class","tooltip")
-							.style("opacity",0.0);
-
-//country_svg.selectAll(".CountryName")
-//        .data(country_list_name)
-//        .enter()
-//        .append("div")
-//        .attr("class","CountryName")
-//        .attr("background-color","rgb(90, 100, 138)")
-//        .attr("height","10px")
-//        .attr("width","10px")
-//        .attr("display","inline")
-//        .attr("border","1px solid red")
-//        .append("p")
-//            .text(function(d){
-//            return d;
-//            })
-//
-//            .attr("font-size", "10px")
-//            .attr("y",10)
-//            .attr("x",function(d,i){
-//         return i * (country_rect_width + 3);
-//          })
-//        .attr("dy","1.7em")
-//        ;
-
-
-  var country_axis = d3.axisLeft(country_linear)
-          .tickSize(100)
-          .ticks(3);
-
-  country_svg.append("g")
-        .attr("transform", "translate(150,10)")
-   .call(country_axis);
-
-  country_svg.selectAll("line")
-        .attr("stroke","grey")
-        .attr("stroke-dasharray","2.2");
-
-country_svg.select(".domain").remove()
-
-
-
-    //添加一个提示框
-
-
-
-
-
-
-</script>
+</html>
