@@ -5,6 +5,7 @@ from flask import json
 from flask import render_template, request
 from flaskext.mysql import MySQL
 from django.utils.safestring import mark_safe
+import functions
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -54,8 +55,14 @@ def iotemplate():
     gender_list_value = structure_result(sql_total_gender_rank_value)[0]
     gender_list = structure_result(sql_total_gender_rank_value)[1]
 
+    sql_tags_all = "select tags from wbdata ;"
+    cursor.execute(sql_tags_all)
+    sql_tags_all_result = cursor.fetchall()
+    frequency_list = functions.wordscounter(functions.turn_tags_tostring(sql_tags_all_result), 120)
 
-    return render_template("iotemplate.html",datalist = datalist, textlist = mark_safe(textlist), country_list = country_list, country_list_name = mark_safe(country_list_name), gender_list= mark_safe(gender_list), gender_list_value=gender_list_value)
+
+
+    return render_template("iotemplate.html",frequency_list = mark_safe(frequency_list),datalist = datalist, textlist = mark_safe(textlist), country_list = country_list, country_list_name = mark_safe(country_list_name), gender_list= mark_safe(gender_list), gender_list_value=gender_list_value)
 
 @app.route('/bar')
 def bar():
@@ -64,25 +71,10 @@ def bar():
 @app.route('/test/')
 def test():
 
-    return render_template('test.html', )
+    return render_template('test.html')
 
 
-@app.route('/delete/<string:todo_id>')
-def delete(todo_id):
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    sql = "delete from tbl_user where user_name=" + str(todo_id)
-    cursor.execute(sql)
 
-    research = cursor.execute("select * from tbl_user")
-
-    result = cursor.fetchall()
-    outputlist = []
-    for something in result:
-        outputlist.append(int(something[1]))
-
-
-    return render_template("test.html", todos=outputlist)
 
 @app.route('/test/<parameter>')
 def showtest(parameter):
@@ -91,7 +83,15 @@ def showtest(parameter):
 
 @app.route('/plot')
 def showplot():
-    return render_template('plot.html')
+    conn = mysql.connect()
+    cursor = conn.cursor()
+
+    # sql_tags_all = "select tags from wbdata ;"
+    # cursor.execute(sql_tags_all)
+    # sql_tags_all_result = cursor.fetchall()
+    # frequency_list = functions.wordscounter(functions.turn_tags_tostring(sql_tags_all_result), 120)
+
+    return render_template('plot.html',)
 
 @app.route('/plotdata')
 def plotdata():

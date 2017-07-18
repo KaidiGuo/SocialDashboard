@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="./static/lib/js/d3.layout.cloud.js"></script>
+ <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+  <script src="./static/lib/js/d3.layout.cloud.js"></script>
 <head>
     <title>Word Cloud Example</title>
 </head>
@@ -25,10 +26,11 @@
 </body>
 <script>
 
-    var frequency_list = [{"text":"德国","size":120},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"physics","size":90},{"text":"describing","size":5},{"text":"matter","size":90},{"text":"physics-the","size":5},{"text":"world","size":10},{"text":"works","size":10},{"text":"science","size":70},{"text":"interactions","size":30},{"text":"studies","size":5},{"text":"properties","size":45},{"text":"nature","size":40},{"text":"branch","size":30},{"text":"concerned","size":25},{"text":"source","size":40},{"text":"google","size":10},{"text":"defintions","size":5},{"text":"two","size":15},{"text":"grouped","size":15},{"text":"traditional","size":15},{"text":"fields","size":15},{"text":"acoustics","size":15},{"text":"optics","size":15},{"text":"mechanics","size":20},{"text":"thermodynamics","size":15},{"text":"electromagnetism","size":15},{"text":"modern","size":15},{"text":"extensions","size":15},{"text":"thefreedictionary","size":15},{"text":"interaction","size":15},{"text":"org","size":25},{"text":"answers","size":5},{"text":"natural","size":15},{"text":"objects","size":5},{"text":"treats","size":10},{"text":"acting","size":5},{"text":"department","size":5},{"text":"gravitation","size":5},{"text":"heat","size":10},{"text":"light","size":10},{"text":"magnetism","size":10},{"text":"modify","size":5},{"text":"general","size":10},{"text":"bodies","size":5},{"text":"philosophy","size":5},{"text":"brainyquote","size":5},{"text":"words","size":5},{"text":"ph","size":5},{"text":"html","size":5},{"text":"lrl","size":5},{"text":"zgzmeylfwuy","size":5},{"text":"subject","size":5},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
-
-
-    var color = d3.scale.linear()
+    var frequency_list = [{"text": "日本", "size": 120}, {"text": "东京", "size": 110.0}, {"text": "旅行", "size": 91.81818181818181}, {"text": "攻略", "size": 82.72727272727273}, {"text": "日语", "size": 82.72727272727273}, {"text": "猫咪", "size": 73.63636363636364}, {"text": "航母", "size": 55.45454545454545}, {"text": "喜欢", "size": 55.45454545454545}, {"text": "哈哈哈", "size": 55.45454545454545}, {"text": "2017", "size": 55.45454545454545}, {"text": "樱花", "size": 55.45454545454545}, {"text": "亚锦赛", "size": 55.45454545454545}, {"text": "安倍", "size": 55.45454545454545}, {"text": "北海道", "size": 46.36363636363636}, {"text": "签证", "size": 46.36363636363636}, {"text": "魔杖", "size": 46.36363636363636}, {"text": "很纯", "size": 46.36363636363636}, {"text": "京都", "size": 46.36363636363636}, {"text": "翻唱", "size": 46.36363636363636}, {"text": "刚好", "size": 37.272727272727266}, {"text": "霍格", "size": 37.272727272727266}, {"text": "莫德", "size": 37.272727272727266}, {"text": "微博", "size": 37.272727272727266}, {"text": "蒸蛋", "size": 37.272727272727266}, {"text": "小姐姐", "size": 37.272727272727266}, {"text": "杯里", "size": 37.272727272727266}, {"text": "鄂梨", "size": 37.272727272727266}, {"text": "安倍晋三", "size": 37.272727272727266}, {"text": "鄂梨泥", "size": 37.272727272727266}, {"text": "大阪", "size": 37.272727272727266}, {"text": "摄影师", "size": 37.272727272727266}, {"text": "中国", "size": 37.272727272727266}, {"text": "遇见", "size": 37.272727272727266}, {"text": "成泥", "size": 37.272727272727266}, {"text": "小哥", "size": 28.18181818181818}, {"text": "酒店", "size": 28.18181818181818}, {"text": "平野", "size": 28.18181818181818}, {"text": "拍照", "size": 28.18181818181818}, {"text": "特秀", "size": 28.18181818181818}, {"text": "综艺", "size": 28.18181818181818}, {"text": "中字", "size": 28.18181818181818}, {"text": "漫画", "size": 28.18181818181818}, {"text": "留学生", "size": 28.18181818181818}, {"text": "完整版", "size": 28.18181818181818}, {"text": "魔法", "size": 19.090909090909086}, {"text": "限定", "size": 19.090909090909086}, {"text": "有个", "size": 19.090909090909086}, {"text": "速报", "size": 19.090909090909086}, {"text": "奈良", "size": 19.090909090909086}, {"text": "池袋", "size": 19.090909090909086}, {"text": "颜值", "size": 19.090909090909086}, {"text": "日剧", "size": 19.090909090909086}, {"text": "李宇春", "size": 19.090909090909086}, {"text": "男子", "size": 19.090909090909086}, {"text": "推特", "size": 19.090909090909086}, {"text": "动漫", "size": 19.090909090909086}, {"text": "作品", "size": 19.090909090909086}, {"text": "旅游", "size": 19.090909090909086}, {"text": "Instagram", "size": 19.090909090909086}, {"text": "高中", "size": 19.090909090909086}, {"text": "游戏", "size": 19.090909090909086}, {"text": "生日快乐", "size": 19.090909090909086}, {"text": "画报", "size": 19.090909090909086}, {"text": "巡演", "size": 19.090909090909086}, {"text": "via", "size": 19.090909090909086}, {"text": "画师", "size": 19.090909090909086}, {"text": "JR", "size": 19.090909090909086}, {"text": "公寓", "size": 19.090909090909086}, {"text": "插画", "size": 19.090909090909086}, {"text": "啊啊啊", "size": 19.090909090909086}, {"text": "3D", "size": 19.090909090909086}, {"text": "洼田", "size": 19.090909090909086}, {"text": "170427", "size": 19.090909090909086}, {"text": "EXO", "size": 19.090909090909086}, {"text": "寿司", "size": 19.090909090909086}, {"text": "小伙伴", "size": 19.090909090909086}, {"text": "品牌", "size": 9.999999999999993}, {"text": "涤荡", "size": 9.999999999999993}, {"text": "翻译", "size": 9.999999999999993}, {"text": "趣闻", "size": 9.999999999999993}, {"text": "球衣", "size": 9.999999999999993}, {"text": "操碎心", "size": 9.999999999999993}, {"text": "箱崎总一", "size": 9.999999999999993}, {"text": "配音", "size": 9.999999999999993}, {"text": "脑洞", "size": 9.999999999999993}, {"text": "单曲", "size": 9.999999999999993}, {"text": "先驱", "size": 9.999999999999993}, {"text": "放送", "size": 9.999999999999993}, {"text": "狗狗", "size": 9.999999999999993}, {"text": "安利", "size": 9.999999999999993}, {"text": "美容", "size": 9.999999999999993}, {"text": "拍摄", "size": 9.999999999999993}, {"text": "讲真", "size": 9.999999999999993}, {"text": "整脊", "size": 9.999999999999993}, {"text": "美好", "size": 9.999999999999993}, {"text": "孤独", "size": 9.999999999999993}, {"text": "星人", "size": 9.999999999999993}, {"text": "监控", "size": 9.999999999999993}, {"text": "美食", "size": 9.999999999999993}, {"text": "艺术家", "size": 9.999999999999993}, {"text": "垃圾", "size": 9.999999999999993}, {"text": "恋爱", "size": 9.999999999999993}, {"text": "巨蛋", "size": 9.999999999999993}, {"text": "和服", "size": 9.999999999999993}, {"text": "美的", "size": 9.999999999999993}, {"text": "城市", "size": 9.999999999999993}, {"text": "闺蜜", "size": 9.999999999999993}, {"text": "女乒", "size": 9.999999999999993}, {"text": "劝架", "size": 9.999999999999993}, {"text": "日本央行", "size": 9.999999999999993}, {"text": "中文", "size": 9.999999999999993}, {"text": "今村", "size": 9.999999999999993}, {"text": "婆婆", "size": 9.999999999999993}, {"text": "专辑", "size": 9.999999999999993}, {"text": "山下", "size": 9.999999999999993}, {"text": "坂本龙", "size": 9.999999999999993}, {"text": "美颜", "size": 9.999999999999993}, {"text": "星野", "size": 9.999999999999993}, {"text": "选手", "size": 9.999999999999993}, {"text": "竹内", "size": 9.999999999999993}];
+//            .domain([0,3,7,15,25,50,60,70,80,90,110])
+////            .domain([110,80,60,40,10,5,4,3,2,1,0])
+//            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222",""]);
+var color = d3.scale.linear()
             .domain([0,1,2,3,4,5,6,10,15,20,100])
             .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
 
@@ -41,13 +43,16 @@
 
     function draw(words) {
         d3.select("body").append("svg")
-                .attr("width", 850)
-                .attr("height", 350)
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox","0 0 900 400")
+                .attr("style", "border: 1px solid black")
+                .attr("preserveAspectRatio","xMaxYMax meet")
                 .attr("class", "wordcloud")
                 .append("g")
                 // without the transform, words words would get cutoff to the left and top, they would
                 // appear outside of the SVG area
-                .attr("transform", "translate(320,200)")
+                .attr("transform", "translate(400,200)")
                 .selectAll("text")
                 .data(words)
                 .enter().append("text")
@@ -62,7 +67,7 @@
 
 <div style="width: 40%;">
     <div class="legend">
-        Commonly used words are larger and slightly faded in color.  Less common words are smaller and darker.
+        越大越深的词出现的约越频繁，这里是Top120热词词云
     </div>
 
 </div>

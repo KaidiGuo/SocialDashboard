@@ -33,6 +33,20 @@
 	 background-color: white;
 }
 
+  body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
+
 </style>
 
 
@@ -67,6 +81,12 @@
       </div>
         </div>
 
+
+
+
+
+
+
     <div class="row">
 
       <div class="col-sm-6">
@@ -80,7 +100,7 @@
               </div>
               <div class="chart-stage">
                 <div id="map_chart">
-                  <img id="im" src="../static/geojson/blue.svg" alt="some text"/>
+                <img id="im" src="../static/geojson/blue.svg" alt="some text"/>
 
                 </div>
               </div>
@@ -88,31 +108,25 @@
           </div>
           <!-- Time Chart -->
 
-          <!-- Resources Pie -->
-          <div class="col-sm-6">
+
+          <div class="col-sm-12">
             <div class="chart-wrapper">
               <div class="chart-title">
-                Resources Type
+                cloud
               </div>
               <div class="chart-stage">
-                <div id="resource-type-row-chart"></div>
+                <div id="word_cloud">
+
+                </div>
               </div>
             </div>
           </div>
+
+
+
+
           <!-- Resources Pie -->
 
-          <!-- Poverty Pie -->
-          <div class="col-sm-6">
-            <div class="chart-wrapper">
-              <div class="chart-title">
-                Poverty Level
-              </div>
-              <div class="chart-stage">
-                <div id="weibo_plot"></div>
-              </div>
-            </div>
-          </div>
-          <!-- Poverty Pie -->
 
         </div>
       </div>
@@ -146,6 +160,30 @@
         </div>
       </div>
       <!-- Metric 2 -->
+      <div class="col-sm-3">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Resources Type
+              </div>
+              <div class="chart-stage">
+                <div id="resource-type-row-chart"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Resources Pie -->
+
+          <!-- Poverty Pie -->
+          <div class="col-sm-3">
+            <div class="chart-wrapper">
+              <div class="chart-title">
+                Poverty Level
+              </div>
+              <div class="chart-stage">
+                <div id="weibo_plot"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Poverty Pie -->
 
 
 
@@ -165,30 +203,15 @@
   <script src="./static/lib/js/d3.js"></script>
   <script src="./static/lib/js/dc.js"></script>
   <script src="./static/lib/js/queue.js"></script>
-
-
   <script src="./static/lib/js/keen.min.js"></script>
   <script src='./static/js/graphs.js' type='text/javascript'></script>
-  <script src="//d3js.org/d3.v4.min.js"></script>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+  <script src="./static/lib/js/d3.layout.cloud.js"></script>
+
 <script>
-d3.xml("../static/geojson/worldmap1.svg").mimeType("image/svg+xml").get(function(error, xml) {
-  if (error) throw error;
-//  document.body.appendChild(xml.documentElement);
-//    document.getElementById("number-projects-nd").appendChild(xml.documentElement);
-//    d3.select("#time-chart")
-//            .append(xml.documentElement);
-});
 
 var box = {"width":"200","height":"200","style":"border: 1px solid red"};
-
-//d3.select("#resource-type-row-chart")
-//        .append("svg")
-//        .attr("width",box.width )
-//        .attr("height",box.height)
-//        .attr("style",box.style)
-
-
-
 
 var width = "100%";  //
 var height ="100%";   //
@@ -202,9 +225,9 @@ var svg = d3.select("#platform_plot")     //
 
 //var dataset = [ 25, 6, 21 , 13 , 9, 6, 2, 20 ];
 var dataset = {{datalist}};
-var texts ={{textlist}}
+var texts ={{textlist}};
 
-var linear = d3.scaleLinear()
+var linear = d3.scale.linear()
         .domain([0, d3.max(dataset)])
         .range([ 0,250]);
 
@@ -253,9 +276,11 @@ svg.selectAll(".MyText")
         });
 
 
-  var axis = d3.axisBottom(linear)
+  var axis = d3.svg.axis()
+          .scale(linear)
+            .orient("bottom")
           .tickSize(300)
-          .ticks(8);
+          .ticks(6);
 
   svg.append("g")
         .attr("transform", "translate(10,10)")
@@ -265,7 +290,9 @@ svg.selectAll(".MyText")
         .attr("stroke","grey")
         .attr("stroke-dasharray","2.2");
 
-svg.select(".domain").remove()
+    svg.select(".domain").remove()
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  Here the horizontal histogram
@@ -284,14 +311,11 @@ var country_list = {{country_list}};
 var country_list_name ={{country_list_name}};
 
 var max_height = 70;
-var country_linear = d3.scaleLinear()
+var country_linear = d3.scale.linear()
         .domain([0, d3.max(country_list)])
         .range([ max_height-5, 0]);
 
-
-
-
-var country_rect_width = 3;   //
+var country_rect_width = 3;
 country_svg.selectAll("rect")
     .data(country_list)
     .enter()
@@ -336,7 +360,9 @@ var tooltip = d3.select("body")
 							.attr("class","tooltip")
 							.style("opacity",0.0);
 
-  var country_axis = d3.axisLeft(country_linear)
+  var country_axis = d3.svg.axis()
+            .scale(country_linear)
+          .orient("left")
           .tickSize(780)
           .ticks(4);
 
@@ -375,17 +401,17 @@ else if (genders[0]== "m"){
                           //associate our data with the document
             .attr("width", width)           //set the width and height of our visualization (these will be attributes of the <svg> tag
             .attr("height", hight)
-            .attr("viewBox","0 0 300 300")
+            .attr("viewBox","0 0 300 350")
             .attr("preserveAspectRatio","xMaxYMax meet")
             .data([gender_list_value])
           .append("g")                //make a group to hold our pie chart
             .attr("transform", "translate(" + radius + "," + radius + ")");   //move the center of the pie chart from 0, 0 to radius, radius
 
-    var arc = d3.arc()              //this will create <path> elements for us using arc data
+    var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
         .outerRadius(radius)
             .innerRadius(0);
 
-    var pie = d3.pie()           //this will create arc data for us given a list of values
+    var pie = d3.layout.pie()           //this will create arc data for us given a list of values
         .value(function(d) { return d; });    //we must tell it out to access the value of each element in our data array
 
     gender_svg.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
@@ -433,6 +459,45 @@ else if (genders[0]== "m"){
             .attr("text-anchor", "middle")
                 .attr("font-size", "80%")//center the text on it's origin
             .text(function(d, i) { return gender_list[i]; });
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// var frequency_list = [{"text":"德国","size":120},{"text":"motion","size":15},{"text":"forces","size":10},{"text":"electricity","size":15},{"text":"movement","size":10},{"text":"relation","size":5},{"text":"things","size":10},{"text":"force","size":5},{"text":"ad","size":5},{"text":"energy","size":85},{"text":"living","size":5},{"text":"nonliving","size":5},{"text":"laws","size":15},{"text":"speed","size":45},{"text":"velocity","size":30},{"text":"define","size":5},{"text":"constraints","size":5},{"text":"universe","size":10},{"text":"physics","size":90},{"text":"describing","size":5},{"text":"matter","size":90},{"text":"physics-the","size":5},{"text":"world","size":10},{"text":"works","size":10},{"text":"science","size":70},{"text":"interactions","size":30},{"text":"studies","size":5},{"text":"properties","size":45},{"text":"nature","size":40},{"text":"branch","size":30},{"text":"concerned","size":25},{"text":"source","size":40},{"text":"google","size":10},{"text":"defintions","size":5},{"text":"two","size":15},{"text":"grouped","size":15},{"text":"traditional","size":15},{"text":"fields","size":15},{"text":"acoustics","size":15},{"text":"optics","size":15},{"text":"mechanics","size":20},{"text":"thermodynamics","size":15},{"text":"electromagnetism","size":15},{"text":"modern","size":15},{"text":"extensions","size":15},{"text":"thefreedictionary","size":15},{"text":"interaction","size":15},{"text":"org","size":25},{"text":"answers","size":5},{"text":"natural","size":15},{"text":"objects","size":5},{"text":"treats","size":10},{"text":"acting","size":5},{"text":"department","size":5},{"text":"gravitation","size":5},{"text":"heat","size":10},{"text":"light","size":10},{"text":"magnetism","size":10},{"text":"modify","size":5},{"text":"general","size":10},{"text":"bodies","size":5},{"text":"philosophy","size":5},{"text":"brainyquote","size":5},{"text":"words","size":5},{"text":"ph","size":5},{"text":"html","size":5},{"text":"lrl","size":5},{"text":"zgzmeylfwuy","size":5},{"text":"subject","size":5},{"text":"distinguished","size":5},{"text":"chemistry","size":5},{"text":"biology","size":5},{"text":"includes","size":5},{"text":"radiation","size":5},{"text":"sound","size":5},{"text":"structure","size":5},{"text":"atoms","size":5},{"text":"including","size":10},{"text":"atomic","size":10},{"text":"nuclear","size":10},{"text":"cryogenics","size":10},{"text":"solid-state","size":10},{"text":"particle","size":10},{"text":"plasma","size":10},{"text":"deals","size":5},{"text":"merriam-webster","size":5},{"text":"dictionary","size":10},{"text":"analysis","size":5},{"text":"conducted","size":5},{"text":"order","size":5},{"text":"understand","size":5},{"text":"behaves","size":5},{"text":"en","size":5},{"text":"wikipedia","size":5},{"text":"wiki","size":5},{"text":"physics-","size":5},{"text":"physical","size":5},{"text":"behaviour","size":5},{"text":"collinsdictionary","size":5},{"text":"english","size":5},{"text":"time","size":35},{"text":"distance","size":35},{"text":"wheels","size":5},{"text":"revelations","size":5},{"text":"minute","size":5},{"text":"acceleration","size":20},{"text":"torque","size":5},{"text":"wheel","size":5},{"text":"rotations","size":5},{"text":"resistance","size":5},{"text":"momentum","size":5},{"text":"measure","size":10},{"text":"direction","size":10},{"text":"car","size":5},{"text":"add","size":5},{"text":"traveled","size":5},{"text":"weight","size":5},{"text":"electrical","size":5},{"text":"power","size":5}];
+
+    var frequency_list ={{frequency_list}};
+
+   var color = d3.scale.linear()
+            .domain([0,1,2,3,4,5,6,10,15,20,100])
+            .range(["#ddd", "#ccc", "#bbb", "#aaa", "#999", "#888", "#777", "#666", "#555", "#444", "#333", "#222"]);
+
+    d3.layout.cloud().size([800, 300])
+            .words(frequency_list)
+            .rotate(0)
+            .fontSize(function(d) { return d.size; })
+            .on("end", draw)
+            .start();
+
+    function draw(words) {
+        d3.select("#word_cloud").append("svg")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox","0 0 900 400")
+                .attr("style", "border: 1px solid black")
+                .attr("preserveAspectRatio","xMaxYMax meet")
+                .attr("class", "wordcloud")
+                .append("g")
+                // without the transform, words words would get cutoff to the left and top, they would
+                // appear outside of the SVG area
+                .attr("transform", "translate(400,200)")
+                .selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function(d) { return d.size + "px"; })
+                .style("fill", function(d, i) { return color(i); })
+                .attr("transform", function(d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function(d) { return d.text; });
+    }
 
 
 
